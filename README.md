@@ -45,13 +45,13 @@ var neuquant = require('neuquant');
 
 // encode an animated GIF file by writing pixels to it.
 // you need to manually quantize the data to produce a palette and indexed pixels.
-var enc = new GIFEncoder(width, height, { palette: paletteBuffer });
+var q = neuquant.quantize(pixels);
+
+var enc = new GIFEncoder(width, height, { palette: q.palette });
 enc.pipe(fs.createWriteStream('out.gif'));
 
-// frame1 and frame2 are buffers containing **indexed**
-// pixel data, not RGB. more on that below.
-enc.write(frame1);
-enc.end(frame2);
+// write indexed data
+enc.end(q.indexed);
 
 // or, pipe data from another RGB stream
 // boom: streaming image transcoding!
