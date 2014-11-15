@@ -53,11 +53,13 @@ enc.pipe(fs.createWriteStream('out.gif'));
 enc.write(frame1);
 enc.end(frame2);
 
-// or, pipe data from another stream
+// or, pipe data from another RGB stream
 // boom: streaming image transcoding!
-RGBSource.pipe(new neuquant.Stream)
-         .pipe(new GIFEncoder)
-         .pipe(fs.createWriteStream('out.gif'));
+fs.createReadStream('rgb.png')
+  .pipe(new PNGDecoder)
+  .pipe(new neuquant.Stream)
+  .pipe(new GIFEncoder)
+  .pipe(fs.createWriteStream('out.gif'));
 ```
 
 ## License
