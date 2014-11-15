@@ -40,7 +40,7 @@ stream, and then to a GIF encoder, which will do the hard work of quantizing and
 indexed data for you.
 
 ```javascript
-var GIFEncoder = require('gif-stream/encoder);
+var GIFEncoder = require('gif-stream/encoder');
 var neuquant = require('neuquant');
 
 // encode an animated GIF file by writing pixels to it.
