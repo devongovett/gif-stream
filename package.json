@@ -1,0 +1,39 @@
+{
+  "name": "gif-stream",
+  "version": "1.0.0",
+  "description": "A streaming GIF encoder and decoder",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "bl": "^0.9.3",
+    "buffer-equal": "^0.0.1",
+    "lzw-stream": "^1.0.0",
+    "pixel-stream": "^1.0.1"
+  },
+  "devDependencies": {
+    "concat-stream": "^1.4.6",
+    "mocha": "^2.0.1"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/devongovett/git-stream.git"
+  },
+  "keywords": [
+    "pixel-stream",
+    "image",
+    "gif",
+    "decode",
+    "encode"
+  ],
+  "author": "Devon Govett <devongovett@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/devongovett/git-stream/issues"
+  },
+  "homepage": "https://github.com/devongovett/git-stream"
+}
