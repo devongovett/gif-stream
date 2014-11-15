@@ -45,8 +45,8 @@ GIFEncoder.prototype._startFrame = function(frame, done) {
   this._writeImageHeader(frame);
   this.push(this.palette);
   
-  this.push(new Buffer([ 11 ])); // LZW code size
-  this._lzw = new LZWEncoder(11);
+  this.push(new Buffer([ 8 ])); // LZW code size
+  this._lzw = new LZWEncoder(8);
 
   this._lzw.on('data', function(block) {
     this.push(new Buffer([block.length]));
