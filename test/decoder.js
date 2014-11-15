@@ -1,7 +1,7 @@
 var GIFDecoder = require('../decoder');
 var assert = require('assert');
 var fs = require('fs');
-var concat = require('../../src/concat-frames');
+var concat = require('concat-frames');
 
 describe('GIFDecoder', function() {
   it('can probe to see if a file is a gif', function() {
