@@ -18,9 +18,12 @@ describe('GIFEncoder', function() {
       
       var dec = new GIFDecoder;
       dec.pipe(concat(function(pix) {
-        assert.equal(dec.width, 10);
-        assert.equal(dec.height, 10);
-        assert.equal(dec.repeatCount, 0);
+        assert.deepEqual(dec.format, {
+          width: 10,
+          height: 10,
+          colorSpace: 'rgb',
+          repeatCount: 0
+        });
         assert.equal(pix.length, 10 * 10 * 3);
         
         var expected = new Buffer(10 * 10 * 3);
@@ -55,8 +58,12 @@ describe('GIFEncoder', function() {
       
       var dec = new GIFDecoder;
       dec.pipe(concat(function(pix) {
-        assert.equal(dec.width, 10);
-        assert.equal(dec.height, 10);
+        assert.deepEqual(dec.format, {
+          width: 10,
+          height: 10,
+          colorSpace: 'rgb',
+          repeatCount: 3
+        });
         assert.equal(pix.length, 10 * 10 * 3 * 2);
         
         var expected = new Buffer(10 * 10 * 3 * 2);
@@ -99,8 +106,12 @@ describe('GIFEncoder', function() {
       
       var dec = new GIFDecoder;
       dec.pipe(concat(function(pix) {
-        assert.equal(dec.width, 10);
-        assert.equal(dec.height, 10);
+        assert.deepEqual(dec.format, {
+          width: 10,
+          height: 10,
+          colorSpace: 'rgb',
+          repeatCount: 0
+        });
         assert.equal(pix.length, 10 * 10 * 3 * 2);
         
         var expected = new Buffer(10 * 10 * 3 * 2);
@@ -142,7 +153,7 @@ describe('GIFEncoder', function() {
       
       var dec = new GIFDecoder;
       dec.pipe(concat(function(pix) {
-        assert.equal(dec.repeatCount, Infinity);
+        assert.equal(dec.format.repeatCount, Infinity);
         done();
       }));
       
@@ -154,15 +165,6 @@ describe('GIFEncoder', function() {
   
   it('learns repeatCount and palette from piped streams', function(done) {
     var s = new PassThrough;
-    s.width = 10;
-    s.height = 10;
-    s.colorSpace = 'indexed';
-    s.repeatCount = 10;
-    s.palette = new Buffer([ 204, 0, 153, 22, 204, 13 ]);
-    
-    var pixels = new Buffer(10 * 10);
-    pixels.fill(0);
-    
     var enc = new GIFEncoder;
         
     enc.pipe(concat(function(buf) {
@@ -170,9 +172,12 @@ describe('GIFEncoder', function() {
       
       var dec = new GIFDecoder;
       dec.pipe(concat(function(pix) {
-        assert.equal(dec.width, 10);
-        assert.equal(dec.height, 10);
-        assert.equal(dec.repeatCount, 10);
+        assert.deepEqual(dec.format, {
+          width: 10,
+          height: 10,
+          colorSpace: 'rgb',
+          repeatCount: 10
+        });
         assert.equal(pix.length, 10 * 10 * 3);
         
         var expected = new Buffer(10 * 10 * 3);
@@ -190,20 +195,26 @@ describe('GIFEncoder', function() {
     }));
     
     s.pipe(enc);
+    s.emit('format', {
+      width: 10,
+      height: 10,
+      colorSpace: 'indexed',
+      repeatCount: 10,
+      palette: new Buffer([ 204, 0, 153, 22, 204, 13 ])
+    });
+    
+    var pixels = new Buffer(10 * 10);
+    pixels.fill(0);
     s.end(pixels);
   });
   
   it('errors if colorSpace of piped stream is not indexed', function(done) {
-    var s = new PassThrough;
-    s.width = 10;
-    s.height = 10;
-    s.colorSpace = 'rgb';
-    
+    var s = new PassThrough;    
     var pixels = new Buffer(10 * 10 * 3);
     pixels.fill(255);
     
     var enc = new GIFEncoder({ repeatCount: 10 });
-        
+    
     enc.on('error', function(err) {
       assert(err instanceof Error);
       assert.equal(err.message, 'Only indexed input is allowed in GIFEncoder');
@@ -211,6 +222,12 @@ describe('GIFEncoder', function() {
     });
     
     s.pipe(enc);
+    s.emit('format', {
+      width: 10,
+      height: 10,
+      colorSpace: 'rgb'
+    });
+    
     s.end(pixels);
   });
   

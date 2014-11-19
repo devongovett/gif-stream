@@ -47,7 +47,7 @@ describe('GIFDecoder', function() {
         assert.equal(frames[1].pixels.length, 16 * 16 * 3);
         assert.deepEqual(frames[1].pixels.slice(0, 3), new Buffer([ 0, 102, 102 ]));
         
-        assert.equal(decoder.repeatCount, Infinity);
+        assert.equal(decoder.format.repeatCount, Infinity);
         done();
       }));
   });

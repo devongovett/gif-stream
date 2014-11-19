@@ -10,10 +10,10 @@
     "bl": "^0.9.3",
     "buffer-equal": "^0.0.1",
     "lzw-stream": "^1.0.0",
-    "pixel-stream": "^1.0.1"
+    "pixel-stream": "^1.0.3"
   },
   "devDependencies": {
-    "concat-frames": "^1.0.0",
+    "concat-frames": "^1.0.1",
     "concat-stream": "^1.4.6",
     "mocha": "^2.0.1"
   },

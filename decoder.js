@@ -21,7 +21,13 @@ function GIFDecoder() {
   this._buffer = new BufferList;
   this._state = GIF_SIGNATURE;
   this._frame = {};
-  this.repeatCount = 0;
+  this._emitFormat = false;
+  this.format = {
+    width: 0,
+    height: 0,
+    colorSpace: 'rgb',
+    repeatCount: 0
+  };
 }
 
 util.inherits(GIFDecoder, Transform);
@@ -106,10 +112,8 @@ GIFDecoder.prototype._readHeader = function() {
   if (buf.length < 7)
     return;
   
-  this.width = buf.readUInt16LE(0);
-  this.height = buf.readUInt16LE(2);
-  this.colorSpace = 'rgb';
-  this.emit('format');
+  this.format.width = buf.readUInt16LE(0);
+  this.format.height = buf.readUInt16LE(2);
     
   var v = buf.get(4);
   var globalMapColors = 2 << (v & 0x07);
@@ -178,7 +182,7 @@ GIFDecoder.prototype._readExtension = function() {
         var repeat = buf.readInt16LE(15);
         
         // -1 = no repeat, 0 = infinity
-        this.repeatCount = repeat === -1 ? 0 : (repeat || Infinity);
+        this.format.repeatCount = repeat === -1 ? 0 : (repeat || Infinity);
       }
         
       break;
@@ -238,7 +242,13 @@ GIFDecoder.prototype._readLZW = function() {
   var buf = this._buffer;
   
   if (!this._lzw && buf.length >= 1) {
+    if (!this._emitFormat) {
+      this.emit('format', this.format);
+      this._emitFormat = true;
+    }
+    
     this.emit('frame', this._frame);
+    
     this._lzw = new LZWDecoder(buf.get(0));
     this._lzw.on('data', this._outputScanline.bind(this));
     this._lzw.on('error', function(err) {
