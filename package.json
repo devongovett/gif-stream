@@ -22,7 +22,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/devongovett/git-stream.git"
+    "url": "git://github.com/devongovett/gif-stream.git"
   },
   "keywords": [
     "pixel-stream",
@@ -34,7 +34,7 @@
   "author": "Devon Govett <devongovett@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/devongovett/git-stream/issues"
+    "url": "https://github.com/devongovett/gif-stream/issues"
   },
-  "homepage": "https://github.com/devongovett/git-stream"
+  "homepage": "https://github.com/devongovett/gif-stream"
 }
