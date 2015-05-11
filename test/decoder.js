@@ -80,6 +80,7 @@ describe('GIFDecoder', function() {
           delete frame.pixels;
           delete frame.transparentColor;
           delete frame.colorSpace;
+          delete frame.palette;
         });
         
         assert.deepEqual(frames, [

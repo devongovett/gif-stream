@@ -15,9 +15,11 @@ var GIF_IMAGE_HEADER = 6;
 var GIF_LZW = 7;
 var GIF_DONE = 8;
 
-function GIFDecoder() {
+function GIFDecoder(options) {
   Transform.call(this);
-  
+  options = options || {};
+
+  var indexed = this._outputIndexed = !!options.indexed;
   this._buffer = new BufferList;
   this._state = GIF_SIGNATURE;
   this._frame = {};
@@ -25,7 +27,7 @@ function GIFDecoder() {
   this.format = {
     width: 0,
     height: 0,
-    colorSpace: 'rgb',
+    colorSpace: indexed ? 'indexed' : 'rgb',
     repeatCount: 0
   };
 }
@@ -136,8 +138,18 @@ GIFDecoder.prototype._readPalette = function() {
     
   this._palette = buf.slice(0, len);
   buf.consume(len);
-  
-  this._state = this._state === GIF_GLOBAL_PALETTE ? GIF_BLOCK : GIF_LZW;
+
+  if (this._state === GIF_GLOBAL_PALETTE) {
+    if (this._outputIndexed) {
+      this.format.palette = this._palette.slice(0);
+    }
+    this._state = GIF_BLOCK;
+  } else {
+    if (this._outputIndexed) {
+      this._frame.palette = this._palette.slice(0);
+    }
+    this._state = GIF_LZW;
+  }
 };
 
 GIFDecoder.prototype._readBlock = function() {
@@ -283,17 +295,23 @@ GIFDecoder.prototype._readLZW = function() {
 };
 
 GIFDecoder.prototype._outputScanline = function(scanline) {
-  var res = new Buffer(scanline.length * 3);
-  var p = 0;
-  
-  for (var i = 0; i < scanline.length; i++) {
-    var idx = scanline[i] * 3;
-    res[p++] = this._palette[idx];
-    res[p++] = this._palette[idx + 1];
-    res[p++] = this._palette[idx + 2];
+  // If we're in indexed colorspace mode, pass data through
+  if (this._outputIndexed) {
+    this.push(scanline);
+  // Otherwise, we're in RGB colorspace, convert indexed to RGB
+  } else {
+    var res = new Buffer(scanline.length * 3);
+    var p = 0;
+
+    for (var i = 0; i < scanline.length; i++) {
+      var idx = scanline[i] * 3;
+      res[p++] = this._palette[idx];
+      res[p++] = this._palette[idx + 1];
+      res[p++] = this._palette[idx + 2];
+    }
+
+    this.push(res);
   }
-  
-  this.push(res);
 };
 
 module.exports = GIFDecoder;
