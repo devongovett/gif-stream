@@ -60,6 +60,15 @@ fs.createReadStream('rgb.png')
   .pipe(new neuquant.Stream)
   .pipe(new GIFEncoder)
   .pipe(fs.createWriteStream('out.gif'));
+
+// maybe you want to preserve the original palette and indexing?
+// you can do that too!
+fs.createReadStream('rgb.png')
+  .pipe(new GIFDecoder({indexed: true}))
+  .pipe(new GIFEncoder)
+  .pipe(fs.createWriteStream('out.gif'));
+// somewhat useless example, but this may be useful for instance
+// if you are breaking an animated GIF into multiple static GIFs
 ```
 
 ## License
