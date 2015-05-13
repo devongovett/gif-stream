@@ -80,6 +80,7 @@ describe('GIFDecoder', function() {
           delete frame.pixels;
           delete frame.transparentColor;
           delete frame.colorSpace;
+          delete frame.palette;
         });
         
         assert.deepEqual(frames, [
@@ -135,5 +136,35 @@ describe('GIFDecoder', function() {
         assert.equal(frames.length, 21);
         done();
       }));
+  });
+
+  it('can output indexed color data', function(done) {
+    var readStream = fs.createReadStream(__dirname + '/images/animated.gif')
+    readStream.pipe(new GIFDecoder({indexed: true}))
+      .on('format', function(format) {
+        readStream.unpipe(this);
+        assert.equal(format.colorSpace, 'indexed');
+        done();
+      });
+  });
+
+  it('propagates global palette information in indexed mode', function(done) {
+    var readStream = fs.createReadStream(__dirname + '/images/animated.gif')
+    readStream.pipe(new GIFDecoder({indexed: true}))
+      .on('format', function(format) {
+        readStream.unpipe(this);
+        assert.ok(format.palette);
+        done();
+      });
+  });
+
+  it('propagates local palette information in indexed mode', function(done) {
+    var readStream = fs.createReadStream(__dirname + '/images/chompy.gif')
+    readStream.pipe(new GIFDecoder({indexed: true}))
+      .once('frame', function(frame) {
+        readStream.unpipe(this);
+        assert.ok(frame.palette);
+        done();
+      });
   });
 });
