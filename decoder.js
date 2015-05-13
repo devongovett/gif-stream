@@ -140,14 +140,10 @@ GIFDecoder.prototype._readPalette = function() {
   buf.consume(len);
 
   if (this._state === GIF_GLOBAL_PALETTE) {
-    if (this._outputIndexed) {
-      this.format.palette = this._palette;
-    }
+    this.format.palette = this._palette;
     this._state = GIF_BLOCK;
   } else {
-    if (this._outputIndexed) {
-      this._frame.palette = this._palette;
-    }
+    this._frame.palette = this._palette;
     this._state = GIF_LZW;
   }
 };
