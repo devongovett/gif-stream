@@ -294,6 +294,7 @@ GIFDecoder.prototype._outputScanline = function(scanline) {
   // If we're in indexed colorspace mode, pass data through
   if (this._outputIndexed) {
     this.push(scanline);
+    
   // Otherwise, we're in RGB colorspace, convert indexed to RGB
   } else {
     var res = new Buffer(scanline.length * 3);
