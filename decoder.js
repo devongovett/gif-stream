@@ -1,7 +1,6 @@
 var util = require('util');
 var Transform = require('stream').Transform;
 var BufferList = require('bl');
-var bufferEqual = require('buffer-equal');
 var LZWDecoder = require('lzw-stream/decoder');
 
 // decoder states
