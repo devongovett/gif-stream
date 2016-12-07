@@ -1,7 +1,5 @@
 var util = require('util');
 var PixelStream = require('pixel-stream');
-var zlib = require('zlib');
-var BufferList = require('bl');
 var LZWEncoder = require('lzw-stream/encoder');
 
 function GIFEncoder(width, height, opts) {
