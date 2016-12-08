@@ -8,7 +8,6 @@
   },
   "dependencies": {
     "bl": "^0.9.3",
-    "buffer-equal": "^0.0.1",
     "lzw-stream": "^1.0.0",
     "pixel-stream": "^1.0.3"
   },
