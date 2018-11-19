@@ -26,7 +26,7 @@ function GIFDecoder(options) {
   this.format = {
     width: 0,
     height: 0,
-    colorSpace: indexed ? 'indexed' : 'rgb',
+    colorSpace: indexed ? 'indexed' : options.rgba ? 'rgba': 'rgb',
     repeatCount: 0
   };
 }
@@ -296,7 +296,8 @@ GIFDecoder.prototype._outputScanline = function(scanline) {
     
   // Otherwise, we're in RGB colorspace, convert indexed to RGB
   } else {
-    var res = new Buffer(scanline.length * 3);
+    var isRgba = this.format.colorSpace === 'rgba';
+    var res = new Buffer(scanline.length * (isRgba ? 4 : 3));
     var p = 0;
 
     for (var i = 0; i < scanline.length; i++) {
@@ -304,6 +305,7 @@ GIFDecoder.prototype._outputScanline = function(scanline) {
       res[p++] = this._palette[idx];
       res[p++] = this._palette[idx + 1];
       res[p++] = this._palette[idx + 2];
+      if (isRgba) res[p++] = scanline[i] == this._frame.transparentColor ? 0 : 1;
     }
 
     this.push(res);
